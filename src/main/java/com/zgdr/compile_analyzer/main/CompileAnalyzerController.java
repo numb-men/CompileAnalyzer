@@ -1,4 +1,4 @@
-package com.zgdr.compile_analyzer;
+package com.zgdr.compile_analyzer.main;
 
 import com.zgdr.compile_analyzer.main.Token;
 import com.zgdr.compile_analyzer.main.WordAnalyzer;
