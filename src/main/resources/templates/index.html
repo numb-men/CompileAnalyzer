@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>编译器分析器1.00</title>
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <style type="text/css">
+        body {
+            background: #f6f6f6;
+            font-size: 95%;
+        }
+        #nav-bar {
+            background: #3193DC;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 0;
+            margin: 0;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+        #nav-bar li {
+            list-style: none;
+            font-size: 2em;
+            font-weight: bold;
+            line-height: 2.2em;
+            padding: 0 30px;
+            margin: 0 45px;
+            border-radius: 15px;
+            cursor: default;
+        }
+        .select-it {
+            background: #FEFEFE;
+            color: #777;
+        }
+        .not-select-it{
+            color: #fefefe;
+        }
+        #wrap {
+            background: #FEFEFE;
+            padding: 0 75px;
+            padding-top: 240px;
+            width: 1600px;
+            min-height: 1800px;
+            margin: 0 auto;
+        }
+        #word-analyze {
+        }
+        .row-in {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+        }
+        .column-in {
+            display: flex;
+            flex-direction: column;
+        }
+        .box-label {
+            border: 1px solid #c9c9c9;
+            border-bottom: 0;
+            border-top-right-radius: 15px;
+            border-top-left-radius: 15px;
+            font-size: 2em;
+            background: #3193DC;
+            color: #FEFEFE;
+            padding: 25px 15px;
+            text-align: center;
+            cursor: default;
+        }
+        .box textarea{
+            border: 1px solid #c9c9c9;
+            border-bottom-right-radius: 15px;
+            border-bottom-left-radius: 15px;
+            font-size: 1.4em;
+            background: #f5f5f5;
+            padding: 10px;
+        }
+        .analyze {
+            cursor: default;
+        }
+        .submit-label {
+            font-size: 1.8em;
+            background: #3193DC;
+            color: #FEFEFE;
+            padding: 6px 10px;
+            text-align: right;
+            width: 90px;
+            border-top-left-radius: 15px;
+            border-bottom-left-radius: 15px;
+            line-height: 2em;
+            margin: auto 0;
+            font-weight: bold;
+        }
+        .triangle-border-right{
+            width: 0;
+            height: 0;
+            border-width:60px 0 60px 60px;
+            border-style: solid;
+            border-color:transparent transparent transparent #3193DC;/*透明 透明 透明 灰*/
+            margin: auto 0;
+        }
+    </style>
+    <script type="text/javascript">
+        var root="http://127.0.0.1:8080/";
+        $(document).ready(function(){
+            $("#submit-word-analyze").click(wordAnalyze);
+        })
+        function wordAnalyze(){
+            console.log($("#word-analyze-input").val());
+            var data = {"strForAnalyze": $("#word-analyze-input").val()};
+            post("http://127.0.0.1:8080/word_analyze", data, "词法分析",
+                function(res){
+                    $("#word-analyze-output").val(res);
+                }
+            )
+        }
+        function post(url, data, desc, callback){
+            $.ajax({
+                url: url,
+                data: data,
+                dataType: "text",
+                method: "POST",
+                success: function(res){
+                    console.log(desc + res);
+                    callback(res)
+                },
+                error: function(xhr){
+                    reqFail();
+                }
+            })
+        }
+        function reqFail(){
+            alert("连接服务器失败！");
+        }
+    </script>
+</head>
+<body>
+<!-- 顶部导航栏 -->
+<ul id="nav-bar">
+    <li class="select-it">词法分析</li>
+    <li class="not-select-it">语法分析</li>
+    <li class="not-select-it">语义分析</li>
+    <li class="not-select-it">关于我们</li>
+</ul>
+
+<!-- 主页面-->
+<div id="wrap">
+    <!-- 词法分析面板 -->
+    <div id="word-analyze" class="show-it">
+        <div class="row-in">
+            <div class="box column-in">
+                <div class="box-label">
+                    词法分析输入
+                </div>
+                <textarea rows="35" cols="65" wrap=off autofocus
+                          placeholder="请输入待分析的代码, 然后点击分析..."  id="word-analyze-input"></textarea>
+            </div>
+
+            <div class="row-in analyze" id="submit-word-analyze">
+                <div class="submit-label">
+                    分析
+                </div>
+                <!-- 向右的三角形 -->
+                <div class="triangle-border-right"></div>
+            </div>
+
+            <div class="box column-in">
+                <div class="box-label">
+                    词法分析结果
+                </div>
+                <textarea rows="35" cols="65" disabled wrap=off id="word-analyze-output"></textarea>
+            </div>
+        </div>
+    </div>
+    <!-- 语法分析 -->
+    <div id="grammar-analyze" class="not-show-it"></div>
+    <!-- 语义分析 -->
+    <div id="semantic-analyze" class="not-show-it"></div>
+    <!-- 关于我们 -->
+    <div id="about-us" class="not-show-it"></div>
+</div>
+</body>
+</html>
